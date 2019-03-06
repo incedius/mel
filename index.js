@@ -26,6 +26,8 @@ module.exports = function Mel(mod) {
 
 
     mod.hook('C_CHAT', 1, event => {
+        if (!enabled) return true
+        
         if (channels.includes(event.channel.toString())){
             
             mod.toServer('C_CHAT',1, {
@@ -38,7 +40,8 @@ module.exports = function Mel(mod) {
     })
 
     mod.hook('C_WHISPER', 1, event => {
-    
+        if (!enabled) return true
+
         mod.toServer('C_WHISPER',1, {
             target: event.target,
             message: event.message.replace(regex, '<FONT>$1...</FONT>')
