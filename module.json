@@ -1,5 +1,12 @@
 {
     "disableAutoUpdate": false,
     "name": "mel",
-    "description": "Hello..."
+    "description": "Hello...",
+    "options": {
+        "niceName": "Mel...",
+        "guiName": "Mel..."
+    },
+    "servers": ["https://raw.githubusercontent.com/incedius/mel/master/"],
+    "supportUrl": "https://github.com/incedius/mel/issues",
+    "version": "1.0"
 }
