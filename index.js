@@ -6,7 +6,8 @@ module.exports = function Mel(mod) {
         channels,
         fileopen=true,
         stopwrite,
-        regex = new RegExp(/<FONT>(.*)<\/FONT>/)
+        regex = new RegExp(/<FONT>(.*)<\/FONT>/),
+        sentenceRegex = new RegExp(/[\wA-Za-z,:<>;@#$%^&*`/\(\)'"\s]+[.?!]/g)
 
     try{
         channels = JSON.parse(fs.readFileSync(path.join(__dirname,'channels.json'), 'utf8'))
@@ -32,7 +33,8 @@ module.exports = function Mel(mod) {
             
             mod.toServer('C_CHAT',1, {
                 channel: event.channel,
-                message: event.message.replace(regex, '<FONT>$1...</FONT>')
+                message: event.message.replace(regex, melFormat)
+                //message: event.message.replace(regex, '<FONT>$1...</FONT>')
             })
 
             return false
@@ -44,12 +46,39 @@ module.exports = function Mel(mod) {
 
         mod.toServer('C_WHISPER',1, {
             target: event.target,
-            message: event.message.replace(regex, '<FONT>$1...</FONT>')
+            message: event.message.replace(regex, melFormat)
+            //message: event.message.replace(regex, '<FONT>$1...</FONT>')
         })
 
         return false
         
     })
+
+    function melFormat(match, p1){
+        var processed = p1.trim().replace(sentenceRegex, sentenceCase)
+
+        processed = processed.charAt(0).toUpperCase() + processed.slice(1)
+        processed = processed.replace('?','...?')
+        processed = processed.replace('!','...!')
+
+        while(processed[processed.length-1]=="."){
+            processed = processed.slice(0,-1)
+        }
+
+        if(processed[processed.length-1]=='?' || processed[processed.length-1]=='!')
+            return '<FONT>'+processed+'</FONT>'
+        else
+            return '<FONT>'+processed + '...</FONT>'
+    }
+
+    function sentenceCase(match){
+        console.log(match)
+        var _match = match.trim()
+        _match = _match.charAt(0).toUpperCase() + _match.slice(1)
+
+        if(match.length>_match.length) return " " + _match
+        else return _match
+    }
 
     function save(data, filename) {
         if(fileopen) {
