@@ -72,7 +72,6 @@ module.exports = function Mel(mod) {
     }
 
     function sentenceCase(match){
-        console.log(match)
         var _match = match.trim()
         _match = _match.charAt(0).toUpperCase() + _match.slice(1)
 
